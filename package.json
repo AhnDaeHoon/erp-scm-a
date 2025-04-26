@@ -5,32 +5,35 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "ts-node-dev --respawn src/index.ts",
+    "dev": "nodemon src/index.ts",
     "build": "tsc",
-    "test": "jest"
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js",
+    "migration:generate": "npm run typeorm -- migration:generate -d src/config/database.ts",
+    "migration:run": "npm run typeorm -- migration:run -d src/config/database.ts",
+    "migration:revert": "npm run typeorm -- migration:revert -d src/config/database.ts",
+    "seed": "ts-node src/seed.ts"
   },
   "dependencies": {
-    "bcrypt": "^5.1.1",
+    "@types/cors": "^2.8.17",
+    "bcryptjs": "^2.4.3",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "cors": "^2.8.5",
-    "dotenv": "^16.5.0",
-    "express": "^4.21.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
-    "pg": "^8.15.5",
+    "pg": "^8.11.3",
     "reflect-metadata": "^0.2.2",
-    "typeorm": "^0.3.22"
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
-    "@types/bcrypt": "^5.0.2",
-    "@types/cors": "^2.8.17",
+    "@types/bcryptjs": "^2.4.6",
     "@types/express": "^4.17.21",
-    "@types/jest": "^29.5.14",
-    "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^20.17.30",
-    "@types/pg": "^8.11.14",
-    "jest": "^29.7.0",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/node": "^20.11.24",
+    "nodemon": "^3.1.0",
     "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.3.3"
   },
   "keywords": [],
   "author": "",
