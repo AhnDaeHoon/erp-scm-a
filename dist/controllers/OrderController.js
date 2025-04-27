@@ -16,7 +16,7 @@ class OrderController {
         this.getAllOrders = async (req, res) => {
             try {
                 const orders = await this.orderRepository.find({
-                    relations: ['orderItems', 'orderItems.product']
+                    relations: ['items', 'items.product']
                 });
                 return res.json(orders);
             }
@@ -31,7 +31,7 @@ class OrderController {
                 const { id } = req.params;
                 const order = await this.orderRepository.findOne({
                     where: { id: parseInt(id) },
-                    relations: ['orderItems', 'orderItems.product']
+                    relations: ['items', 'items.product']
                 });
                 if (!order) {
                     return res.status(404).json({ message: '주문을 찾을 수 없습니다.' });
@@ -144,7 +144,7 @@ class OrderController {
                 const { id } = req.params;
                 const order = await this.orderRepository.findOne({
                     where: { id: parseInt(id) },
-                    relations: ['orderItems', 'orderItems.product']
+                    relations: ['items', 'items.product']
                 });
                 if (!order) {
                     return res.status(404).json({ message: '주문을 찾을 수 없습니다.' });
@@ -154,7 +154,7 @@ class OrderController {
                     return res.status(400).json({ message: '완료된 주문은 삭제할 수 없습니다.' });
                 }
                 // 재고 복구
-                for (const item of order.orderItems) {
+                for (const item of order.items) {
                     const product = item.product;
                     product.quantity += item.quantity;
                     await queryRunner.manager.save(product);
@@ -189,6 +189,34 @@ class OrderController {
             }
             catch (error) {
                 console.error('주문 항목 조회 중 오류 발생:', error);
+                return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
+            }
+        };
+        // 주문 업데이트
+        this.updateOrder = async (req, res) => {
+            try {
+                const { id } = req.params;
+                const { customerName, customerEmail, customerPhone, shippingAddress } = req.body;
+                const order = await this.orderRepository.findOne({
+                    where: { id: parseInt(id) }
+                });
+                if (!order) {
+                    return res.status(404).json({ message: '주문을 찾을 수 없습니다.' });
+                }
+                // 주문이 배송 중이거나 완료된 경우 수정 불가
+                if (order.status === 'shipped' || order.status === 'completed') {
+                    return res.status(400).json({ message: '배송 중이거나 완료된 주문은 수정할 수 없습니다.' });
+                }
+                // 주문 정보 업데이트
+                order.customerName = customerName || order.customerName;
+                order.customerEmail = customerEmail || order.customerEmail;
+                order.customerPhone = customerPhone || order.customerPhone;
+                order.shippingAddress = shippingAddress || order.shippingAddress;
+                await this.orderRepository.save(order);
+                return res.json({ message: '주문이 성공적으로 업데이트되었습니다.', order });
+            }
+            catch (error) {
+                console.error('주문 업데이트 중 오류 발생:', error);
                 return res.status(500).json({ message: '서버 오류가 발생했습니다.' });
             }
         };

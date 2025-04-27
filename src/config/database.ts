@@ -19,6 +19,7 @@ export const AppDataSource = new DataSource({
     synchronize: false,
     logging: true,
     entities: [User, Role, Permission, Product, Order, OrderItem, InventoryIn, InventoryOut],
-    migrations: ['src/migrations/**/*.ts'],
-    subscribers: ['src/subscribers/**/*.ts'],
+    // 마이그레이션과 구독자 기능 비활성화
+    // migrations: ['src/migrations/**/*.ts'],
+    // subscribers: ['src/subscribers/**/*.ts'],
 }); 

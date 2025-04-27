@@ -21,6 +21,7 @@ exports.AppDataSource = new typeorm_1.DataSource({
     synchronize: false,
     logging: true,
     entities: [User_1.User, Role_1.Role, Permission_1.Permission, Product_1.Product, Order_1.Order, OrderItem_1.OrderItem, InventoryIn_1.InventoryIn, InventoryOut_1.InventoryOut],
-    migrations: ['src/migrations/**/*.ts'],
-    subscribers: ['src/subscribers/**/*.ts'],
+    // 마이그레이션과 구독자 기능 비활성화
+    // migrations: ['src/migrations/**/*.ts'],
+    // subscribers: ['src/subscribers/**/*.ts'],
 });
